@@ -2,7 +2,13 @@
 #include "DictionaryTrie.h"
 
 
+TrieNode::TrieNode() {}
 
+TrieNode::TrieNode(char letter) {
+	key = letter;
+	isWord = false;
+	leftChild = middleChild = rightChild = nullptr;
+}
 
 /* Create a new Dictionary that uses a Trie back end */
 DictionaryTrie::DictionaryTrie(){}
@@ -13,9 +19,57 @@ DictionaryTrie::DictionaryTrie(){}
  * invalid (empty string) */
 bool DictionaryTrie::insert(std::string word, unsigned int freq)
 {
-  return false;
-}
+  
+	// need to add in a check for find
+	if(!(this->find(word))) { return false; }
 
+	//if the string is empty
+	if(word.size() == 0) { return false; }
+	
+	int index = 0;
+	char currChar = word.at(index);
+	char nextChar;
+	TrieNode insertNode = TrieNode(currChar);
+	
+	//if there's no root, create the root
+	if(!root) {
+		root = &insertNode;	
+		//while the character we're examining isn't the last one
+		while(index < (word.length() - 1)) {
+			index++;	
+			nextChar = word.at(index);
+	
+			// create the next Node
+			TrieNode insertNextNode = TrieNode(nextChar);
+			insertNode.middleChild = &insertNextNode;
+	
+			if(index != (word.length() - 1)) 
+			{
+				currChar = nextChar;
+			} else {
+			
+				insertNextNode.isWord = 1;
+			}
+		}	
+	
+
+	return true;	
+
+	}
+
+	//the root already exists
+	if(root->key < currChar) {}
+
+
+	if(root->key > currChar) {}
+
+	if(root->key == currChar) {}
+
+	
+
+	return false;		
+	
+}
 /* Return true if word is in the dictionary, and false otherwise */
 bool DictionaryTrie::find(std::string word) const
 {
