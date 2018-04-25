@@ -9,6 +9,17 @@
 #include <vector>
 #include <string>
 
+class TrieNode
+{
+ private:
+  int key;
+  TrieNode* leftChild;
+  TrieNode* middleChild;
+  TrieNode* rightChild;
+  int isWord;
+
+  friend class DictionaryTrie;
+};
 /**
  *  The class for a dictionary ADT, implemented as a trie
  *  You may implement this class as either a mulit-way trie
@@ -59,6 +70,9 @@ public:
 
 private:
   // Add your own data members and methods here
+
+  friend class TrieNode;
+
 };
 
 #endif // DICTIONARY_TRIE_H
