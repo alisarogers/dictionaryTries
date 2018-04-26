@@ -14,10 +14,10 @@ class TrieNode
 public: 
 
   TrieNode();
-  TrieNode* newNode(char letter);
   bool insertNode(std::string word, TrieNode* start);  
+  bool findNode(std::string word, TrieNode*start);
 
- private:
+// private:
   int key;
   TrieNode * leftChild;
   TrieNode * middleChild;
@@ -27,6 +27,8 @@ public:
   friend class DictionaryTrie;
 };
 
+  bool insertNode(std::string word, TrieNode* start);  
+  TrieNode* newNode(char letter);
 /**
  *  The class for a dictionary ADT, implemented as a trie
  *  You may implement this class as either a mulit-way trie

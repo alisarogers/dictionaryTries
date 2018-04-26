@@ -4,30 +4,41 @@
 
 TrieNode::TrieNode() {}
 
-TrieNode* TrieNode::newNode(char letter) {
+TrieNode* newNode(char letter) {
 	TrieNode* temp = new TrieNode;
 	temp->key = letter;
 	temp->isWord = false;
-	leftChild = middleChild = rightChild = NULL;
+	temp->leftChild = temp->middleChild = temp->rightChild = NULL;
 	return temp;
 }
 
-bool TrieNode::insertNode(std::string word, TrieNode* start) {
+bool insertNode(std::string word, TrieNode* start) {
 
 	unsigned int index = 0;
+	TrieNode * insNode = start;
+	char nextChar;
 	char currChar = word.at(index);
-	TrieNode* currNode = start;
-
-	if(currChar == currNode->key) {
-		index++;
-		currNode = currNode->middleChild;		
-		currChar = word.at(index);
-	} else if(currChar == currNode->leftChild->key) 
-	{
-	} else if (currChar == currNode->rightChild->key)
 	
+	while(index < (word.length() - 1)) {
+		index++;	
+		nextChar = word.at(index);
+	
+		// create the next Node
+		TrieNode* insertNextNode = newNode(nextChar);
+		insNode->middleChild = insertNextNode;
+	
+		if(index != (word.length() - 1)) 
+		{
+			currChar = nextChar;
+			insNode = insertNextNode;
+		} else {
+		
+			insertNextNode->isWord = true;
+		}
+	}	
+	return true;
 
-	return false;
+
 }
 
 /* Create a new Dictionary that uses a Trie back end */
@@ -42,68 +53,109 @@ DictionaryTrie::DictionaryTrie(){
 bool DictionaryTrie::insert(std::string word, unsigned int freq)
 {
  
-	return 	root->insertNode(word, root);
-
- 
-/*	// need to add in a check for find
 	// TODO fix the freq
 	if(this->find(word)) { return false; }
 
 	//if the string is empty
 	if(word.size() == 0) { return false; }
+
+	// check for special characters
+	for(int i = 0; i < word.size(); i++) {
+		//space bar
+		if(word.at(i) == 32) { }
+
+		//97 = 'a', 122 = 'z'
+		else if(word.at(i) < 97) { return false; }
+		else if(word.at(i) > 122) { return false; }		
+	}
 	
 	unsigned int index = 0;
 	char currChar = word.at(index);
-	char nextChar;
-	TrieNode * iisertNode = newNode(currChar);
+	std::string copyWord = word;
+	TrieNode * insNode = newNode(currChar);
 
 	//if there's no root, create the root
 	if(!root) {
-		this->root = insertNode;	
-		//while the character we're examining isn't the last one
-		while(index < (word.length() - 1)) {
-			index++;	
-			nextChar = word.at(index);
-	
-			// create the next Node
-			TrieNode insertNextNode = TrieNode(nextChar);
-			insertNode.middleChild = &insertNextNode;
-	
-			if(index != (word.length() - 1)) 
-			{
-				currChar = nextChar;
-				insertNode = insertNextNode;
-			} else {
-			
-				insertNextNode.isWord = 1;
-			}
-		}	
-	
-
-	return true;	
-
+		root = insNode;
+		insertNode(word, root);	
+		return true;	
 	}
 
+	TrieNode* currNode = root;
 	//the root already exists
-	if(root->key < currChar) {}
 	
+	//if the character to insert is larger than the current key
+	while(currNode) {
+	if(currChar > currNode->key)
+	{
+		if(currNode->rightChild) 
+		{				
+			currNode = currNode->rightChild;
+		} else {
 
-	if(root->key > currChar) {}
+	TrieNode * insNode = newNode(currChar);
+			currNode->rightChild = insNode;
+			insertNode(copyWord, currNode->rightChild);
+			return true;
+		}
+	}
+	
+	//if the character to insert is less than the current key
+	else if(currChar < currNode->key) 
+	{
+		if(currNode->leftChild)
+		{
+			currNode = currNode->leftChild;
+		} else {
+		
+	TrieNode * insNode = newNode(currChar);
+			currNode->leftChild = insNode;
+			insertNode(copyWord, currNode->leftChild);
+			return true;
+		}
+	}
 
-	if(root->key == currChar) {}
-
+	else if(currNode->key == currChar)
+	{
+		if(currNode->middleChild)
+		{
+			index++;
+			if(index >= word.size()) { return false; }
+			currChar = word.at(index);
+			copyWord.erase(0,1);
+			currNode = currNode->middleChild;
+		} else {
+	TrieNode * insNode = newNode(currChar);
+			currNode->middleChild = insNode;
+			insertNode(copyWord, currNode->middleChild);
+			return true;
+		}
+	}
+	}
 	
 
 	return false;		
-*/	
+	
 }
 /* Return true if word is in the dictionary, and false otherwise */
 bool DictionaryTrie::find(std::string word) const
 {
   /* if there is no root */
   if(!root) { return false; }
+  
+  if(word.size() == 0) { return false; }
   unsigned int index = 0;
   
+  // check for special characters
+  for(int i = 0; i < word.size(); i++) {
+	//space bar
+	if(word.at(i) == 32) { }
+
+	//97 = 'a', 122 = 'z'
+	else if(word.at(i) < 97) { return false; }
+	else if(word.at(i) > 122) { return false; }		
+  }
+
   char currChar = word.at(index);
   char checkChar = this->root->key;
   TrieNode * currNode = this->root;
@@ -114,19 +166,22 @@ bool DictionaryTrie::find(std::string word) const
 	index++;
 	currChar = word.at(index);
 	currNode = currNode->middleChild;
-  } else if(currChar == currNode->leftChild->key) 
+	checkChar = currNode->key;
+  } else if(currChar < checkChar && currNode->leftChild) 
   {
-	index++;
-	currChar = word.at(index);
+	checkChar = currNode->leftChild->key;
 	currNode = currNode->leftChild;
-  } else if(currChar == currNode->rightChild->key) 
+  } else if(currChar > checkChar && currNode->rightChild) 
   {
-	index++;
-	currChar = word.at(index);
-	currNode = currNode->middleChild;
+	checkChar = currNode->rightChild->key;
+	currNode = currNode->rightChild;
   } else { return false; }
+
+//  if(!currNode) { return false; }
   }
-  return currNode->isWord;
+
+  if (checkChar == currChar) {
+  return currNode->isWord; } else { return false; }
 }
 
 /* Return up to num_completions of the most frequent completions

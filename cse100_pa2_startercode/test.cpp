@@ -232,7 +232,13 @@ int main(int argc, char** argv)
 
     // Test edge cases
     dt.insert("cat", 5);
-    if (dt.find("ca") || dt.find("car") || dt.find("cats")) {
+    if (dt.find("ca")) {
+        cout << "Failed for Dictionary Trie" << endl;
+    }
+    if (dt.find("car")) {
+        cout << "Failed for Dictionary Trie" << endl;
+    }
+    if (dt.find("cats")) {
         cout << "Failed for Dictionary Trie" << endl;
     }
     if (dt.insert("", 10) || dt.find("")) {
