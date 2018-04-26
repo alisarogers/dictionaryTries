@@ -1,39 +1,46 @@
 #include "util.h"
 #include "DictionaryTrie.h"
 
-
+/* empty constructor */
 TrieNode::TrieNode() {}
 
+/*creates a new Node */
 TrieNode* newNode(char letter) {
 	TrieNode* temp = new TrieNode;
 	temp->key = letter;
 	temp->isWord = false;
+	temp->frequency = 0;
 	temp->leftChild = temp->middleChild = temp->rightChild = NULL;
 	return temp;
 }
 
-bool insertNode(std::string word, TrieNode* start) {
+/*helper method for insert*/
+bool insertNode(std::string word, TrieNode* start, unsigned int freq) {
 
 	unsigned int index = 0;
 	TrieNode * insNode = start;
 	char nextChar;
 	char currChar = word.at(index);
 	
+	/*inserts the length of the word*/
 	while(index < (word.length() - 1)) {
 		index++;	
 		nextChar = word.at(index);
 	
-		// create the next Node
+		/* create the next Node */
 		TrieNode* insertNextNode = newNode(nextChar);
 		insNode->middleChild = insertNextNode;
-	
+
+		/* checks that the node isn't the last one*/	
 		if(index != (word.length() - 1)) 
 		{
 			currChar = nextChar;
 			insNode = insertNextNode;
 		} else {
-		
+			
+			/*if this is the last node, mark it as a word */
 			insertNextNode->isWord = true;
+			insertNextNode->frequency = freq;
 		}
 	}	
 	return true;
@@ -41,6 +48,56 @@ bool insertNode(std::string word, TrieNode* start) {
 
 }
 
+
+/* helper method to change the frequency of a word */
+TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
+
+  
+  if(word.size() == 0) { return NULL; }
+  unsigned int index = 0;
+  
+  /* check for special characters*/
+  for(unsigned int i = 0; i < word.size(); i++) {
+	/*space bar */
+	if(word.at(i) == 32) { }
+
+	/*97 = 'a', 122 = 'z'*/
+	else if(word.at(i) < 97) { return NULL; }
+	else if(word.at(i) > 122) { return NULL; }		
+  }
+
+  char currChar = word.at(index);
+  char checkChar = start->key;
+  TrieNode * currNode = start;
+
+
+  /* looks for the word in the tree*/
+  while(index < (word.size() - 1)){
+  if(checkChar == currChar && currNode->middleChild) 
+  {
+	index++;
+	currChar = word.at(index);
+	currNode = currNode->middleChild;
+	checkChar = currNode->key;
+  } else if(currChar < checkChar && currNode->leftChild) 
+  {
+	checkChar = currNode->leftChild->key;
+	currNode = currNode->leftChild;
+  } else if(currChar > checkChar && currNode->rightChild) 
+  {
+	checkChar = currNode->rightChild->key;
+	currNode = currNode->rightChild;
+  } else { return NULL; }
+
+  }
+
+
+  /*checks to make sure the last character truly is the last character in the word */
+  if (checkChar == currChar) {
+  return currNode; } else { return NULL; }
+
+
+}
 /* Create a new Dictionary that uses a Trie back end */
 DictionaryTrie::DictionaryTrie(){
 	
@@ -52,15 +109,21 @@ DictionaryTrie::DictionaryTrie(){
  * invalid (empty string) */
 bool DictionaryTrie::insert(std::string word, unsigned int freq)
 {
- 
-	// TODO fix the freq
+	//this changes the frequency of a duplicate word
+	if(root) { 
+		TrieNode* changeFreqNode = findNode(word, root, freq);	
+		if(changeFreqNode)
+		{ changeFreqNode->frequency = freq;
+		} 
+	}
+	// this returns false for a duplicate word
 	if(this->find(word)) { return false; }
 
 	//if the string is empty
 	if(word.size() == 0) { return false; }
 
 	// check for special characters
-	for(int i = 0; i < word.size(); i++) {
+	for(unsigned int i = 0; i < word.size(); i++) {
 		//space bar
 		if(word.at(i) == 32) { }
 
@@ -77,7 +140,7 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 	//if there's no root, create the root
 	if(!root) {
 		root = insNode;
-		insertNode(word, root);	
+		insertNode(word, root, freq);	
 		return true;	
 	}
 
@@ -93,9 +156,9 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 			currNode = currNode->rightChild;
 		} else {
 
-	TrieNode * insNode = newNode(currChar);
+			TrieNode * insNode = newNode(currChar);
 			currNode->rightChild = insNode;
-			insertNode(copyWord, currNode->rightChild);
+			insertNode(copyWord, currNode->rightChild, freq);
 			return true;
 		}
 	}
@@ -108,26 +171,33 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 			currNode = currNode->leftChild;
 		} else {
 		
-	TrieNode * insNode = newNode(currChar);
+			TrieNode * insNode = newNode(currChar);
 			currNode->leftChild = insNode;
-			insertNode(copyWord, currNode->leftChild);
+			insertNode(copyWord, currNode->leftChild, freq);
 			return true;
 		}
 	}
 
+	/*if the character to insert is the same as the current key*/
 	else if(currNode->key == currChar)
 	{
+
+		/*if the currNode has a middle child already, we recurse with the middle Child, but we also want to only search for the rest of the word*/
 		if(currNode->middleChild)
 		{
 			index++;
+			/*if the word is over, we're done. */
 			if(index >= word.size()) { return false; }
 			currChar = word.at(index);
 			copyWord.erase(0,1);
 			currNode = currNode->middleChild;
-		} else {
-	TrieNode * insNode = newNode(currChar);
+		} 
+		/* if there's no middle child yet, this is it */
+		else {
+		
+			TrieNode * insNode = newNode(currChar);
 			currNode->middleChild = insNode;
-			insertNode(copyWord, currNode->middleChild);
+			insertNode(copyWord, currNode->middleChild, freq);
 			return true;
 		}
 	}
@@ -147,7 +217,7 @@ bool DictionaryTrie::find(std::string word) const
   unsigned int index = 0;
   
   // check for special characters
-  for(int i = 0; i < word.size(); i++) {
+  for(unsigned int i = 0; i < word.size(); i++) {
 	//space bar
 	if(word.at(i) == 32) { }
 
@@ -160,6 +230,7 @@ bool DictionaryTrie::find(std::string word) const
   char checkChar = this->root->key;
   TrieNode * currNode = this->root;
 
+  /* checks to find the word in the tree */
   while(index < (word.size() - 1)){
   if(checkChar == currChar && currNode->middleChild) 
   {
@@ -177,9 +248,10 @@ bool DictionaryTrie::find(std::string word) const
 	currNode = currNode->rightChild;
   } else { return false; }
 
-//  if(!currNode) { return false; }
   }
 
+
+  /* this checks that the last character is truly the same as the last character of the word */
   if (checkChar == currChar) {
   return currNode->isWord; } else { return false; }
 }

@@ -15,7 +15,8 @@ public:
 
   TrieNode();
   bool insertNode(std::string word, TrieNode* start);  
-  bool findNode(std::string word, TrieNode*start);
+  TrieNode* findNode(std::string word, TrieNode*start, unsigned int freq);
+
 
 // private:
   int key;
@@ -23,6 +24,7 @@ public:
   TrieNode * middleChild;
   TrieNode * rightChild;
   int isWord;
+  unsigned int frequency; 
 
   friend class DictionaryTrie;
 };
