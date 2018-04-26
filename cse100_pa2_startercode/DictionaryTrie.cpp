@@ -4,36 +4,62 @@
 
 TrieNode::TrieNode() {}
 
-TrieNode::TrieNode(char letter) {
-	key = letter;
-	isWord = false;
-	leftChild = middleChild = rightChild = nullptr;
+TrieNode* TrieNode::newNode(char letter) {
+	TrieNode* temp = new TrieNode;
+	temp->key = letter;
+	temp->isWord = false;
+	leftChild = middleChild = rightChild = NULL;
+	return temp;
+}
+
+bool TrieNode::insertNode(std::string word, TrieNode* start) {
+
+	unsigned int index = 0;
+	char currChar = word.at(index);
+	TrieNode* currNode = start;
+
+	if(currChar == currNode->key) {
+		index++;
+		currNode = currNode->middleChild;		
+		currChar = word.at(index);
+	} else if(currChar == currNode->leftChild->key) 
+	{
+	} else if (currChar == currNode->rightChild->key)
+	
+
+	return false;
 }
 
 /* Create a new Dictionary that uses a Trie back end */
-DictionaryTrie::DictionaryTrie(){}
-
+DictionaryTrie::DictionaryTrie(){
+	
+	this->root = NULL;
+}
 /* Insert a word with its frequency into the dictionary.
  * Return true if the word was inserted, and false if it
  * was not (i.e. it was already in the dictionary or it was
  * invalid (empty string) */
 bool DictionaryTrie::insert(std::string word, unsigned int freq)
 {
-  
-	// need to add in a check for find
-	if(!(this->find(word))) { return false; }
+ 
+	return 	root->insertNode(word, root);
+
+ 
+/*	// need to add in a check for find
+	// TODO fix the freq
+	if(this->find(word)) { return false; }
 
 	//if the string is empty
 	if(word.size() == 0) { return false; }
 	
-	int index = 0;
+	unsigned int index = 0;
 	char currChar = word.at(index);
 	char nextChar;
-	TrieNode insertNode = TrieNode(currChar);
-	
+	TrieNode * iisertNode = newNode(currChar);
+
 	//if there's no root, create the root
 	if(!root) {
-		root = &insertNode;	
+		this->root = insertNode;	
 		//while the character we're examining isn't the last one
 		while(index < (word.length() - 1)) {
 			index++;	
@@ -46,6 +72,7 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 			if(index != (word.length() - 1)) 
 			{
 				currChar = nextChar;
+				insertNode = insertNextNode;
 			} else {
 			
 				insertNextNode.isWord = 1;
@@ -59,7 +86,7 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 
 	//the root already exists
 	if(root->key < currChar) {}
-
+	
 
 	if(root->key > currChar) {}
 
@@ -68,12 +95,38 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 	
 
 	return false;		
-	
+*/	
 }
 /* Return true if word is in the dictionary, and false otherwise */
 bool DictionaryTrie::find(std::string word) const
 {
-  return false;
+  /* if there is no root */
+  if(!root) { return false; }
+  unsigned int index = 0;
+  
+  char currChar = word.at(index);
+  char checkChar = this->root->key;
+  TrieNode * currNode = this->root;
+
+  while(index < (word.size() - 1)){
+  if(checkChar == currChar && currNode->middleChild) 
+  {
+	index++;
+	currChar = word.at(index);
+	currNode = currNode->middleChild;
+  } else if(currChar == currNode->leftChild->key) 
+  {
+	index++;
+	currChar = word.at(index);
+	currNode = currNode->leftChild;
+  } else if(currChar == currNode->rightChild->key) 
+  {
+	index++;
+	currChar = word.at(index);
+	currNode = currNode->middleChild;
+  } else { return false; }
+  }
+  return currNode->isWord;
 }
 
 /* Return up to num_completions of the most frequent completions

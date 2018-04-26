@@ -14,13 +14,14 @@ class TrieNode
 public: 
 
   TrieNode();
-  TrieNode(char letter);
+  TrieNode* newNode(char letter);
+  bool insertNode(std::string word, TrieNode* start);  
 
  private:
   int key;
-  TrieNode* leftChild;
-  TrieNode* middleChild;
-  TrieNode* rightChild;
+  TrieNode * leftChild;
+  TrieNode * middleChild;
+  TrieNode * rightChild;
   int isWord;
 
   friend class DictionaryTrie;
@@ -77,7 +78,7 @@ public:
 private:
   // Add your own data members and methods here
   TrieNode * root;
- // friend class TrieNode;
+  friend class TrieNode;
 
 };
 
