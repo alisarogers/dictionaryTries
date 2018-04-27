@@ -69,7 +69,7 @@ int main(int argc, char** argv)
         t_bst = d_bst.insert(*wit);
         t_ht = d_ht.insert(*wit);
         tt = dt.insert(*wit, 1);
-        //cout << t_bst << " " << t_ht << " "<< tt << "... ";
+        cout << t_bst << " " << t_ht << " "<< tt << "... ";
         if(!t_bst)
         {
             cout << "FAILED for DictionaryBST... ";
@@ -89,6 +89,22 @@ int main(int argc, char** argv)
         cout << endl;
     }
 
+	tt = dt.insert("basket", 1);
+	if(!tt)
+        {
+            cout << "FAILED for DictionaryTrie... ";
+        }
+
+	tt = dt.insert("apples", 1);
+	if(!tt)
+        {
+            cout << "FAILED on appples ";
+        }
+	tt = dt.insert("apple", 1);
+	if(!tt)
+        {
+            cout << "FAILED on apple";
+        }
     cout << endl << "Re-inserting elements that were just inserted into Dictionaries..." << endl;
 
     wit = words.begin();

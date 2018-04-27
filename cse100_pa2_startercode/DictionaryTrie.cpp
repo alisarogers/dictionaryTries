@@ -135,6 +135,10 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 		TrieNode* changeFreqNode = findNode(word, root, freq);	
 		if(changeFreqNode)
 		{ changeFreqNode->frequency = freq;
+		  if(!changeFreqNode->isWord) {
+		  	changeFreqNode->isWord = true;
+			return true;
+		  }
 		} 
 	}
 	// this returns false for a duplicate word
