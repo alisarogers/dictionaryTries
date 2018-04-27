@@ -113,11 +113,21 @@ int main(int argc, char** argv)
         {
             cout << "FAILED on appples ";
         }
+	tt = dt.find("apples");
+	if(!tt)
+        {
+            cout << "FAILED find  on apples";
+        }
 
 	tt = dt.insert("apple", 1);
 	if(!tt)
         {
             cout << "FAILED on apple ";
+        }
+	tt = dt.find("apple");
+	if(!tt)
+        {
+            cout << "FAILED find  on apple";
         }
 	tt = dt.insert("b", 1);
 	if(!tt)
@@ -127,17 +137,32 @@ int main(int argc, char** argv)
 	tt = dt.find("b");
 	if(!tt)
         {
-            cout << "FAILED find  on b";
+            cout << "failed find  on b";
         }
 	tt = dt.insert("aaa", 1);
 	if(tt)
         {
-            cout << "FAILED on apple";
+            cout << "FAILED on insert AAA";
+        }
+	tt = dt.find("aaa");
+	if(!tt)
+        {
+            cout << "FAILED find  on aaa";
+        }
+	tt = dt.insert("aa", 1);
+	if(!tt)
+        {
+            cout << "FAILED on aa";
+        }
+	tt = dt.find("aa");
+	if(!tt)
+        {
+            cout << "FAILED find  on aaa";
         }
 	tt = dt.insert("aaa", 2);
 	if(tt)
         {
-            cout << "FAILED on aa";
+            cout << "FAILED on aaa";
         }
     cout << endl << "Re-inserting elements that were just inserted into Dictionaries..." << endl;
 
