@@ -16,7 +16,7 @@ public:
   TrieNode();
   bool insertNode(std::string word, TrieNode* start);  
   TrieNode* findNode(std::string word, TrieNode*start, unsigned int freq);
-
+  void deleteAllNodes(TrieNode* root);
 
 // private:
   int key;
@@ -82,6 +82,7 @@ public:
 private:
   // Add your own data members and methods here
   TrieNode * root;
+  void deleteTree();
   friend class TrieNode;
 
 };

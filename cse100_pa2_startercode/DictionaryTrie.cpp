@@ -18,7 +18,11 @@ TrieNode* newNode(char letter) {
 bool insertNode(std::string word, TrieNode* start, unsigned int freq) {
 
 	unsigned int index = 0;
-	TrieNode * insNode = start;
+//	if(start) {
+		TrieNode * insNode = start;
+//	} else {
+//	}
+
 	char nextChar;
 	char currChar = word.at(index);
 	
@@ -98,6 +102,23 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
 
 
 }
+
+void TrieNode::deleteAllNodes(TrieNode* start) {
+
+	if(!start) { return; }
+
+	if(start->leftChild)
+	{ start->deleteAllNodes(start->leftChild); }
+
+	if(start->rightChild) 
+	{ start->deleteAllNodes(start->rightChild); }
+	
+	if(start->middleChild)
+	{ start->deleteAllNodes(start->middleChild); }
+	delete start;
+
+}
+
 /* Create a new Dictionary that uses a Trie back end */
 DictionaryTrie::DictionaryTrie(){
 	
@@ -135,11 +156,10 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 	unsigned int index = 0;
 	char currChar = word.at(index);
 	std::string copyWord = word;
-	TrieNode * insNode = newNode(currChar);
 
 	//if there's no root, create the root
 	if(!root) {
-		root = insNode;
+		root = newNode(currChar);
 		insertNode(word, root, freq);	
 		return true;	
 	}
@@ -283,6 +303,13 @@ std::vector<std::string> DictionaryTrie::predictCompletions(std::string prefix, 
 std::string DictionaryTrie::checkSpelling(std::string query)
 {
   return "";
+}
+
+void DictionaryTrie::deleteTree() {
+
+	root->deleteAllNodes(root);
+	delete this->root;
+	delete this;
 }
 
 /* Destructor */
