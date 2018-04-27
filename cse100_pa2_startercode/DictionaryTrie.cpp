@@ -59,6 +59,7 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
   
   if(word.size() == 0) { return NULL; }
   int index = 0;
+  int indexL1 = 0;
   /* check for special characters*/
   for(unsigned int i = 0; i < word.size(); i++) {
 	/*space bar */
@@ -72,22 +73,25 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
   char currChar = word.at(index);
   char checkChar = start->key;
   TrieNode * currNode = start;
-
+  
   if(word.size() == 1) { 
-	index = 0; 
+	indexL1 = 1; 
   }
 
 
   /* looks for the word in the tree*/
-  while(index < word.size() ){
+  while(index < word.size() - 1 + indexL1 ){
   if(checkChar == currChar && currNode->middleChild) 
   {
-	currChar = word.at(index);
-	currNode = currNode->middleChild;
-	if(!(word.size() == 1)) {
-		checkChar = currNode->key;
-	}
 	index++;
+	currChar = word.at(index - indexL1);
+	
+	if(word.size() == 1) { break; }
+	currNode = currNode->middleChild;
+//	if(!(word.size() == 1)) {
+		checkChar = currNode->key; 
+//	}
+//	index++;
   } else if(currChar < checkChar && currNode->leftChild) 
   {
 	checkChar = currNode->leftChild->key;
@@ -103,7 +107,9 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
 
   /*checks to make sure the last character truly is the last character in the word */
   if (checkChar == currChar) {
-  return currNode; } else { return NULL; }
+	  return currNode; 
+
+  } else { return NULL; }
 
 
 }
