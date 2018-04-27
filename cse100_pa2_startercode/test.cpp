@@ -164,6 +164,18 @@ int main(int argc, char** argv)
         {
             cout << "FAILED on aaa";
         }
+
+
+	tt = dt.insert("up", 1);
+	if(!tt)
+        {
+            cout << "FAILED on up";
+        }
+	tt = dt.find("up");
+	if(!tt)
+        {
+            cout << "FAILED find  on up";
+        }
     cout << endl << "Re-inserting elements that were just inserted into Dictionaries..." << endl;
 
     wit = words.begin();

@@ -71,30 +71,56 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
   char checkChar = start->key;
   TrieNode * currNode = start;
   
-  if(word.size() == 1) { 
+/*  if(word.size() == 1) { 
 	indexL1 = 1; 
   }
+*/
+ if (word.size() == 1) {
 
+  while(index < word.size() - 1){
+ 	 if(checkChar == currChar && currNode->middleChild) 
+ 	 {
+		index++;
+		currChar = word.at(index - indexL1);
+	
+	} else if(currChar < checkChar && currNode->leftChild) 
+ 	{
+		checkChar = currNode->leftChild->key;
+		currNode = currNode->leftChild;
+	} else if(currChar > checkChar && currNode->rightChild) 
+	{
+		checkChar = currNode->rightChild->key;
+		currNode = currNode->rightChild;
+	} else
+	{
+		return NULL;
+	}
+}
+	return currNode;
+}
 
   /* looks for the word in the tree*/
-  while(index < word.size() - 1 + indexL1 ){
-  if(checkChar == currChar && currNode->middleChild) 
-  {
-	index++;
-	currChar = word.at(index - indexL1);
+  while(index < word.size() - 1){
+ 	 if(checkChar == currChar && currNode->middleChild) 
+ 	 {
+		index++;
+		currChar = word.at(index - indexL1);
 	
-	if(word.size() <= 2) { break; }
-	currNode = currNode->middleChild;
-		checkChar = currNode->key; 
-  } else if(currChar < checkChar && currNode->leftChild) 
-  {
-	checkChar = currNode->leftChild->key;
-	currNode = currNode->leftChild;
-  } else if(currChar > checkChar && currNode->rightChild) 
-  {
-	checkChar = currNode->rightChild->key;
-	currNode = currNode->rightChild;
-  } else { return NULL; }
+//		if(word.size() <= 2) { break; }
+			currNode = currNode->middleChild;
+			checkChar = currNode->key; 
+	} else if(currChar < checkChar && currNode->leftChild) 
+ 	{
+		checkChar = currNode->leftChild->key;
+		currNode = currNode->leftChild;
+	} else if(currChar > checkChar && currNode->rightChild) 
+	{
+		checkChar = currNode->rightChild->key;
+		currNode = currNode->rightChild;
+	} else
+	{
+		return NULL;
+	}
 
   }
 
