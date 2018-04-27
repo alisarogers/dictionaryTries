@@ -58,8 +58,7 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
 
   
   if(word.size() == 0) { return NULL; }
-  unsigned int index = 0;
-  
+  int index = 0;
   /* check for special characters*/
   for(unsigned int i = 0; i < word.size(); i++) {
 	/*space bar */
@@ -74,15 +73,21 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
   char checkChar = start->key;
   TrieNode * currNode = start;
 
+  if(word.size() == 1) { 
+	index = 0; 
+  }
+
 
   /* looks for the word in the tree*/
-  while(index < (word.size() - 1)){
+  while(index < word.size() ){
   if(checkChar == currChar && currNode->middleChild) 
   {
-	index++;
 	currChar = word.at(index);
 	currNode = currNode->middleChild;
-	checkChar = currNode->key;
+	if(!(word.size() == 1)) {
+		checkChar = currNode->key;
+	}
+	index++;
   } else if(currChar < checkChar && currNode->leftChild) 
   {
 	checkChar = currNode->leftChild->key;
