@@ -100,15 +100,26 @@ int main(int argc, char** argv)
         {
             cout << "FAILED on appples ";
         }
+
+	tt = dt.insert("apple", 1);
+	if(!tt)
+        {
+            cout << "FAILED on appple ";
+        }
 	tt = dt.insert("b", 1);
 	if(!tt)
         {
             cout << "FAILED on b";
         }
-	tt = dt.insert("apple", 1);
+	tt = dt.insert("aaa", 1);
 	if(!tt)
         {
             cout << "FAILED on apple";
+        }
+	tt = dt.insert("aaa", 2);
+	if(tt)
+        {
+            cout << "FAILED on aa";
         }
     cout << endl << "Re-inserting elements that were just inserted into Dictionaries..." << endl;
 

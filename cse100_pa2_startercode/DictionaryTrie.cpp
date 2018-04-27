@@ -86,12 +86,9 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
 	index++;
 	currChar = word.at(index - indexL1);
 	
-	if(word.size() == 1) { break; }
+	if(word.size() <= 2) { break; }
 	currNode = currNode->middleChild;
-//	if(!(word.size() == 1)) {
 		checkChar = currNode->key; 
-//	}
-//	index++;
   } else if(currChar < checkChar && currNode->leftChild) 
   {
 	checkChar = currNode->leftChild->key;
