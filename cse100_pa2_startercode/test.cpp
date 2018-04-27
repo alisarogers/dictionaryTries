@@ -61,6 +61,19 @@ int main(int argc, char** argv)
 
     cout << "Inserting into Dictionaries..." << endl;
 
+	tt = dt.insert("aaa", 1);
+	if(!tt)
+        {
+            cout << "FAILED on root aaa";
+        }
+	tt = dt.insert("aaa", 2);
+	if(tt)
+        {
+            cout << "FAILED on duplicate insert of aaa";
+        }
+
+
+
     wit = words.begin();
     wen = words.end();
     for(; wit != wen; ++wit)
@@ -104,15 +117,20 @@ int main(int argc, char** argv)
 	tt = dt.insert("apple", 1);
 	if(!tt)
         {
-            cout << "FAILED on appple ";
+            cout << "FAILED on apple ";
         }
 	tt = dt.insert("b", 1);
 	if(!tt)
         {
             cout << "FAILED on b";
         }
-	tt = dt.insert("aaa", 1);
+	tt = dt.find("b");
 	if(!tt)
+        {
+            cout << "FAILED find  on b";
+        }
+	tt = dt.insert("aaa", 1);
+	if(tt)
         {
             cout << "FAILED on apple";
         }

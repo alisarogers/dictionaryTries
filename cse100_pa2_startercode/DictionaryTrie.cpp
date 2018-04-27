@@ -18,10 +18,7 @@ TrieNode* newNode(char letter) {
 bool insertNode(std::string word, TrieNode* start, unsigned int freq) {
 
 	unsigned int index = 0;
-//	if(start) {
-		TrieNode * insNode = start;
-//	} else {
-//	}
+	TrieNode * insNode = start;
 
 	char nextChar;
 	char currChar = word.at(index);
@@ -138,22 +135,34 @@ DictionaryTrie::DictionaryTrie(){
  * invalid (empty string) */
 bool DictionaryTrie::insert(std::string word, unsigned int freq)
 {
-	//this changes the frequency of a duplicate word
-	if(root) { 
-		TrieNode* changeFreqNode = findNode(word, root, freq);	
-		if(changeFreqNode)
-		{ changeFreqNode->frequency = freq;
-		  if(!changeFreqNode->isWord) {
-		  	changeFreqNode->isWord = true;
-			return true;
-		  }
-		} 
-	}
-	// this returns false for a duplicate word
-	if(this->find(word)) { return false; }
-
 	//if the string is empty
 	if(word.size() == 0) { return false; }
+
+	unsigned int index = 0;
+	char currChar = word.at(index);
+
+	//if there's no root, create the root
+	if(!root) {
+		root = newNode(currChar);
+		insertNode(word, root, freq);	
+		return true;	
+	}
+	
+	
+	//this changes the frequency of a duplicate word OR it'll mark
+	//a substring as a word 
+	TrieNode* changeFreqNode = findNode(word, root, freq);	
+	if(changeFreqNode)
+	{ 
+		changeFreqNode->frequency = freq;
+	 	 if(!changeFreqNode->isWord) {
+	  		changeFreqNode->isWord = true;
+			return true;
+		  }
+	} 
+	
+	// this returns false for a duplicate word
+	if(this->find(word)) { return false; }
 
 	// check for special characters
 	for(unsigned int i = 0; i < word.size(); i++) {
@@ -165,16 +174,8 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 		else if(word.at(i) > 122) { return false; }		
 	}
 	
-	unsigned int index = 0;
-	char currChar = word.at(index);
 	std::string copyWord = word;
 
-	//if there's no root, create the root
-	if(!root) {
-		root = newNode(currChar);
-		insertNode(word, root, freq);	
-		return true;	
-	}
 
 	TrieNode* currNode = root;
 	//the root already exists
@@ -242,8 +243,15 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 /* Return true if word is in the dictionary, and false otherwise */
 bool DictionaryTrie::find(std::string word) const
 {
+	TrieNode* wasItFound = findNode(word, root, 0);
+	if(wasItFound) {
+		return true;
+	}
+	return false;
+
+}
   /* if there is no root */
-  if(!root) { return false; }
+/*  if(!root) { return false; }
   
   if(word.size() == 0) { return false; }
   unsigned int index = 0;
@@ -262,7 +270,7 @@ bool DictionaryTrie::find(std::string word) const
   char checkChar = this->root->key;
   TrieNode * currNode = this->root;
 
-  /* checks to find the word in the tree */
+  * checks to find the word in the tree 
   while(index < (word.size() - 1)){
   if(checkChar == currChar && currNode->middleChild) 
   {
@@ -283,11 +291,11 @@ bool DictionaryTrie::find(std::string word) const
   }
 
 
-  /* this checks that the last character is truly the same as the last character of the word */
+ * this checks that the last character is truly the same as the last character of the word *
   if (checkChar == currChar) {
   return currNode->isWord; } else { return false; }
 }
-
+*/
 /* Return up to num_completions of the most frequent completions
  * of the prefix, such that the completions are words in the dictionary.
  * These completions should be listed from most frequent to least.
