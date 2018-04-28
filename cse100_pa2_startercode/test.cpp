@@ -176,6 +176,16 @@ int main(int argc, char** argv)
         {
             cout << "FAILED find  on up";
         }
+	tt = dt.insert("by", 1);
+	if(!tt)
+        {
+            cout << "FAILED on by";
+        }
+	tt = dt.find("by");
+	if(!tt)
+        {
+            cout << "FAILED find  on by";
+        }
     cout << endl << "Re-inserting elements that were just inserted into Dictionaries..." << endl;
 
     wit = words.begin();
@@ -320,13 +330,13 @@ int main(int argc, char** argv)
     // Test edge cases
     dt.insert("cat", 5);
     if (dt.find("ca")) {
-        cout << "Failed for Dictionary Trie" << endl;
+        cout << "Failed for Dictionary Trie ca" << endl;
     }
     if (dt.find("car")) {
-        cout << "Failed for Dictionary Trie" << endl;
+        cout << "Failed for Dictionary Trie car" << endl;
     }
     if (dt.find("cats")) {
-        cout << "Failed for Dictionary Trie" << endl;
+        cout << "Failed for Dictionary Trie cats" << endl;
     }
     if (dt.insert("", 10) || dt.find("")) {
         cout << "Should not insert/find an empty string" << endl;

@@ -22,6 +22,13 @@ bool insertNode(std::string word, TrieNode* start, unsigned int freq) {
 
 	char nextChar;
 	char currChar = word.at(index);
+
+	if(word.length() == 1) {
+		
+		insNode->isWord = true;
+		insNode->frequency = freq;
+		return true;
+	}
 	
 	/*inserts the length of the word*/
 	while(index < (word.length() - 1)) {
@@ -55,8 +62,7 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
 
   
   if(word.size() == 0) { return NULL; }
-  int index = 0;
-  int indexL1 = 0;
+
   /* check for special characters*/
   for(unsigned int i = 0; i < word.size(); i++) {
 	/*space bar */
@@ -67,56 +73,55 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
 	else if(word.at(i) > 122) { return NULL; }		
   }
 
+  int index = 0;
   char currChar = word.at(index);
-  char checkChar = start->key;
   TrieNode * currNode = start;
   
-/*  if(word.size() == 1) { 
-	indexL1 = 1; 
-  }
-*/
- if (word.size() == 1) {
 
-  while(index < word.size() - 1){
- 	 if(checkChar == currChar && currNode->middleChild) 
- 	 {
-		index++;
-		currChar = word.at(index - indexL1);
-	
-	} else if(currChar < checkChar && currNode->leftChild) 
+  while(currNode){
+	if(currNode->key == currChar) 
  	{
-		checkChar = currNode->leftChild->key;
-		currNode = currNode->leftChild;
-	} else if(currChar > checkChar && currNode->rightChild) 
-	{
-		checkChar = currNode->rightChild->key;
-		currNode = currNode->rightChild;
-	} else
-	{
-		return NULL;
-	}
-}
-	return currNode;
-}
-
-  /* looks for the word in the tree*/
-  while(index < word.size() - 1){
- 	 if(checkChar == currChar && currNode->middleChild) 
- 	 {
 		index++;
-		currChar = word.at(index - indexL1);
-	
-//		if(word.size() <= 2) { break; }
+		if(index < word.size())  
+		{
+			currChar = word.at(index);
+			currNode = currNode->middleChild;
+		} else 
+		{
+			return currNode;
+		}
+	} else if(currChar < currNode->key && currNode->leftChild) 
+ 	{
+		currNode = currNode->leftChild;
+	} else if(currChar > currNode->key && currNode->rightChild) 
+	{
+		currNode = currNode->rightChild;
+	} else {
+		currNode = NULL;
+	}
+  }
+	return NULL;
+}
+  /* looks for the word in the tree*/
+/*  while(index <= word.size() -1){
+ 	 if(checkChar == currChar)
+ 	 {
+		if(currNode->middleChild) 
+		{
 			currNode = currNode->middleChild;
 			checkChar = currNode->key; 
+			index++;
+			currChar = word.at(index);
+		}
+		return currNode;
 	} else if(currChar < checkChar && currNode->leftChild) 
  	{
-		checkChar = currNode->leftChild->key;
 		currNode = currNode->leftChild;
+		checkChar = currNode->key;
 	} else if(currChar > checkChar && currNode->rightChild) 
 	{
-		checkChar = currNode->rightChild->key;
 		currNode = currNode->rightChild;
+		checkChar = currNode->key;
 	} else
 	{
 		return NULL;
@@ -125,7 +130,7 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
   }
 
 
-  /*checks to make sure the last character truly is the last character in the word */
+  checks to make sure the last character truly is the last character in the word 
   if (checkChar == currChar) {
 	  return currNode; 
 
@@ -133,7 +138,7 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
 
 
 }
-
+*/
 void TrieNode::deleteAllNodes(TrieNode* start) {
 
 	if(!start) { return; }
@@ -181,10 +186,10 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 	if(changeFreqNode)
 	{ 
 		changeFreqNode->frequency = freq;
-	 	 if(!changeFreqNode->isWord) {
+	 	if(!changeFreqNode->isWord) {
 	  		changeFreqNode->isWord = true;
 			return true;
-		  }
+		}
 	} 
 	
 	// this returns false for a duplicate word
@@ -271,7 +276,7 @@ bool DictionaryTrie::find(std::string word) const
 {
 	TrieNode* wasItFound = findNode(word, root, 0);
 	if(wasItFound) {
-		return true;
+		return wasItFound->isWord;
 	}
 	return false;
 
