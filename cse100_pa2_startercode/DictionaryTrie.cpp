@@ -190,11 +190,9 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 	  		changeFreqNode->isWord = true;
 			return true;
 		}
+		return false;
 	} 
 	
-	// this returns false for a duplicate word
-	if(this->find(word)) { return false; }
-
 	// check for special characters
 	for(unsigned int i = 0; i < word.size(); i++) {
 		//space bar
@@ -246,7 +244,8 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 	else if(currNode->key == currChar)
 	{
 
-		/*if the currNode has a middle child already, we recurse with the middle Child, but we also want to only search for the rest of the word*/
+		/*if the currNode has a middle child already, we recurse with the middle Child,
+		but we also want to only search for the rest of the word*/
 		if(currNode->middleChild)
 		{
 			index++;
@@ -259,9 +258,9 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 		/* if there's no middle child yet, this is it */
 		else {
 		
-			TrieNode * insNode = newNode(currChar);
-			currNode->middleChild = insNode;
-			insertNode(copyWord, currNode->middleChild, freq);
+	//		TrieNode * insNode = newNode(currChar);
+	//		currNode->middleChild = insNode;
+			insertNode(copyWord, currNode, freq);
 			return true;
 		}
 	}
