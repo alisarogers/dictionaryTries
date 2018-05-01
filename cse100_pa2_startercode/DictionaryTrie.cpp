@@ -10,6 +10,7 @@ TrieNode* newNode(char letter) {
 	temp->key = letter;
 	temp->isWord = false;
 	temp->frequency = 0;
+	temp->stringSoFar = "";
 	temp->leftChild = temp->middleChild = temp->rightChild = NULL;
 	return temp;
 }
@@ -19,13 +20,14 @@ bool insertNode(std::string word, TrieNode* start, unsigned int freq) {
 
 	unsigned int index = 0;
 	TrieNode * insNode = start;
-
+	std::string strToAppend = "";
 	char nextChar;
 	char currChar = word.at(index);
 
 	if(word.length() == 1) {
 		
 		insNode->isWord = true;
+		insNode->stringSoFar = word;
 		insNode->frequency = freq;
 		return true;
 	}
@@ -38,6 +40,9 @@ bool insertNode(std::string word, TrieNode* start, unsigned int freq) {
 		/* create the next Node */
 		TrieNode* insertNextNode = newNode(nextChar);
 		insNode->middleChild = insertNextNode;
+		strToAppend = insNode->stringSoFar;
+		strToAppend += nextChar;
+		insertNextNode->stringSoFar = strToAppend;
 
 		/* checks that the node isn't the last one*/	
 		if(index != (word.length() - 1)) 
@@ -338,7 +343,7 @@ bool DictionaryTrie::find(std::string word) const
  */
 std::vector<std::string> DictionaryTrie::predictCompletions(std::string prefix, unsigned int num_completions)
 {
-	std::vector<std::string> words;
+/*	std::vector<std::string> words;
 	std::priority_queue <TrieNode, std::vector<TrieNode>,Comparator> TrieQueue;
 	TrieNode* wasItFound = findNode(prefix, root, 0);
 
@@ -358,7 +363,7 @@ std::vector<std::string> DictionaryTrie::predictCompletions(std::string prefix, 
   
   return words;
 }
-/*TrieNode * BFSNode(TrieNode n)
+*TrieNode * BFSNode(TrieNode n)
 {
 	std::priority_queue <TrieNode, std::vector<TrieNode>,OrderAlpha> TrieQueue;
 	TrieQueue.push(n);
@@ -367,8 +372,9 @@ std::vector<std::string> DictionaryTrie::predictCompletions(std::string prefix, 
 		BFSNode(n->leftChild);
 	}
 	if(n->middleChild)
+*/
 }
-*/ 
+ 
 /*
  * Return the most similar word of equal length to the query, based
  * on their Hamming distance. 

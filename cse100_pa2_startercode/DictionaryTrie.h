@@ -25,7 +25,7 @@ public:
   TrieNode * rightChild;
   int isWord;
   unsigned int frequency; 
-
+  std::string stringSoFar;
   friend class DictionaryTrie;
   friend class Comparator;
 };
