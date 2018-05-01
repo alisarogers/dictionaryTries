@@ -107,43 +107,7 @@ TrieNode* findNode(std::string word, TrieNode* start, unsigned int freq) {
   }
 	return NULL;
 }
-  /* looks for the word in the tree*/
-/*  while(index <= word.size() -1){
- 	 if(checkChar == currChar)
- 	 {
-		if(currNode->middleChild) 
-		{
-			currNode = currNode->middleChild;
-			checkChar = currNode->key; 
-			index++;
-			currChar = word.at(index);
-		}
-		return currNode;
-	} else if(currChar < checkChar && currNode->leftChild) 
- 	{
-		currNode = currNode->leftChild;
-		checkChar = currNode->key;
-	} else if(currChar > checkChar && currNode->rightChild) 
-	{
-		currNode = currNode->rightChild;
-		checkChar = currNode->key;
-	} else
-	{
-		return NULL;
-	}
 
-  }
-
-
-  checks to make sure the last character truly is the last character in the word 
-  if (checkChar == currChar) {
-	  return currNode; 
-
-  } else { return NULL; }
-
-
-}
-*/
 void TrieNode::deleteAllNodes(TrieNode* start) {
 
 	if(!start) { return; }
@@ -343,8 +307,8 @@ bool DictionaryTrie::find(std::string word) const
  */
 std::vector<std::string> DictionaryTrie::predictCompletions(std::string prefix, unsigned int num_completions)
 {
-/*	std::vector<std::string> words;
-	std::priority_queue <TrieNode, std::vector<TrieNode>,Comparator> TrieQueue;
+	std::vector<std::string> words;
+	std::priority_queue <TrieNode, std::vector<TrieNode>, Comparator> TrieQueue;
 	TrieNode* wasItFound = findNode(prefix, root, 0);
 
 	if(!wasItFound || !num_completions || prefix.compare(" ") )
@@ -353,26 +317,43 @@ std::vector<std::string> DictionaryTrie::predictCompletions(std::string prefix, 
 		return words;
 	}
 
-	//while(TrieQueue.size <= num_completions)
-	while(wasItFound)
-	{
-		if(wasIt)
+	DFSTraversal(wasItFound, TrieQueue);
 
-		TrieQueue.push()
+	TrieNode temp;
+	std::string tempWord = "";
+	for (int i = 0; i <= num_completions; i++) {
+		temp = TrieQueue.top();
+		TrieQueue.pop();
+		tempWord = temp.stringSoFar;
+		words.push_back(tempWord);
 	}
-  
-  return words;
+
+	return words;
 }
-*TrieNode * BFSNode(TrieNode n)
-{
-	std::priority_queue <TrieNode, std::vector<TrieNode>,OrderAlpha> TrieQueue;
-	TrieQueue.push(n);
-	while(n)
-	if (n->leftChild){
-		BFSNode(n->leftChild);
+
+void DictionaryTrie::DFSTraversal(TrieNode* n, std::priority_queue <TrieNode, std::vector<TrieNode>, Comparator>& TrieQ)
+{ 
+	if(!n) { return; }
+
+	//if n is a word, push it onto the stack
+	if (n->isWord) {
+		TrieQ.push(*n);
 	}
-	if(n->middleChild)
-*/
+	
+	//while we are on existing nodes
+	if(n->leftChild) {
+		DFSTraversal(n->leftChild, TrieQ);	
+	}
+	
+	if(n->middleChild) {
+		DFSTraversal(n->middleChild, TrieQ);
+	}
+
+	if(n->rightChild) {
+		DFSTraversal(n->rightChild, TrieQ);
+	}
+
+  return;
 }
  
 /*

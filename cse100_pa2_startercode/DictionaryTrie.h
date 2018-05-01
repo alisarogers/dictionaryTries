@@ -32,6 +32,14 @@ public:
 
   bool insertNode(std::string word, TrieNode* start);  
   TrieNode* newNode(char letter);
+class Comparator
+{
+public:
+  bool operator() (TrieNode &a, TrieNode &b) 
+  {
+    return a.frequency < b.frequency;
+  }
+};
 /**
  *  The class for a dictionary ADT, implemented as a trie
  *  You may implement this class as either a mulit-way trie
@@ -76,6 +84,7 @@ public:
    */
   std::string
   checkSpelling(std::string query);
+  void DFSTraversal(TrieNode* n, std::priority_queue<TrieNode, std::vector<TrieNode>, Comparator>& TrieQ);
 
   /* Destructor */
   ~DictionaryTrie();
@@ -86,13 +95,6 @@ private:
   void deleteTree();
   friend class TrieNode;
 
-};
-class Comparator
-{
-  bool operator() (TrieNode &a, TrieNode &b) 
-  {
-    return a.frequency < b.frequency;
-  }
 };
 
 #endif // DICTIONARY_TRIE_H
