@@ -5,7 +5,7 @@
 
 #ifndef DICTIONARY_TRIE_H
 #define DICTIONARY_TRIE_H
-
+#include <queue>
 #include <vector>
 #include <string>
 
@@ -27,6 +27,7 @@ public:
   unsigned int frequency; 
 
   friend class DictionaryTrie;
+  friend class Comparator;
 };
 
   bool insertNode(std::string word, TrieNode* start);  
@@ -85,6 +86,13 @@ private:
   void deleteTree();
   friend class TrieNode;
 
+};
+class Comparator
+{
+  bool operator() (TrieNode &a, TrieNode &b) 
+  {
+    return a.frequency < b.frequency;
+  }
 };
 
 #endif // DICTIONARY_TRIE_H

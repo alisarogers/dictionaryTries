@@ -338,10 +338,37 @@ bool DictionaryTrie::find(std::string word) const
  */
 std::vector<std::string> DictionaryTrie::predictCompletions(std::string prefix, unsigned int num_completions)
 {
-  std::vector<std::string> words;
+	std::vector<std::string> words;
+	std::priority_queue <TrieNode, std::vector<TrieNode>,Comparator> TrieQueue;
+	TrieNode* wasItFound = findNode(prefix, root, 0);
+
+	if(!wasItFound || !num_completions || prefix.compare(" ") )
+	{
+		std::cerr<<"Invalid Input. Please retry with correct input"<<"\n";
+		return words;
+	}
+
+	//while(TrieQueue.size <= num_completions)
+	while(wasItFound)
+	{
+		if(wasIt)
+
+		TrieQueue.push()
+	}
+  
   return words;
 }
-
+/*TrieNode * BFSNode(TrieNode n)
+{
+	std::priority_queue <TrieNode, std::vector<TrieNode>,OrderAlpha> TrieQueue;
+	TrieQueue.push(n);
+	while(n)
+	if (n->leftChild){
+		BFSNode(n->leftChild);
+	}
+	if(n->middleChild)
+}
+*/ 
 /*
  * Return the most similar word of equal length to the query, based
  * on their Hamming distance. 
