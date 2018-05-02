@@ -320,9 +320,15 @@ std::vector<std::string> DictionaryTrie::predictCompletions(std::string prefix, 
 		std::cerr<<"Invalid Input. Please retry with correct input"<<"\n";
 		return words;
 	}
-
-	DFSTraversal(wasItFound, TrieQueue);
-
+	
+	if(wasItFound->middleChild) {
+		if(wasItFound->isWord) {
+			TrieQueue.push(*wasItFound);
+		}
+		DFSTraversal(wasItFound->middleChild, TrieQueue);
+	} else {
+		return words;
+	}
 	TrieNode temp;
 	std::string tempWord = "";
 	for (int i = 0; i < num_completions; i++) {
@@ -344,6 +350,7 @@ void DictionaryTrie::DFSTraversal(TrieNode* n, std::priority_queue <TrieNode, st
 	if (n->isWord) {
 		TrieQ.push(*n);
 	}
+	
 	
 	//while we are on existing nodes
 	if(n->leftChild) {
@@ -370,6 +377,7 @@ void DictionaryTrie::DFSTraversal(TrieNode* n, std::priority_queue <TrieNode, st
  * trie, return an empty string.
  */
 std::string DictionaryTrie::checkSpelling(std::string query)
+
 {
   return "";
 }

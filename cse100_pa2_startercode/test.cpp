@@ -405,7 +405,7 @@ int main(int argc, char** argv)
     trie.insert("stern", 3000);
 
     // check that resulting vector holds expected elements
-    vector<std::string> completions = trie.predictCompletions("ste", 4);
+    vector<std::string> completions = trie.predictCompletions("step", 4);
     cout << "vector contains ";
     for (auto item : completions) {
         cout << item << " ";
