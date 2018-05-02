@@ -31,7 +31,7 @@ bool insertNode(std::string word, TrieNode* start, unsigned int freq) {
 		insNode->frequency = freq;
 		return true;
 	}
-	
+
 	/*inserts the length of the word*/
 	while(index < (word.length() - 1)) {
 		index++;	
@@ -144,6 +144,7 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 	//if there's no root, create the root
 	if(!root) {
 		root = newNode(currChar);
+		root->stringSoFar = currChar;
 		insertNode(word, root, freq);	
 		return true;	
 	}
@@ -173,7 +174,7 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 	}
 	
 	std::string copyWord = word;
-
+	std::string firstHalfWord = "";
 
 	TrieNode* currNode = root;
 	//the root already exists
@@ -189,6 +190,8 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 
 			TrieNode * insNode = newNode(currChar);
 			currNode->rightChild = insNode;
+			insNode->stringSoFar = firstHalfWord;
+			insNode->stringSoFar += currChar;
 			insertNode(copyWord, currNode->rightChild, freq);
 			return true;
 		}
@@ -204,6 +207,8 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 		
 			TrieNode * insNode = newNode(currChar);
 			currNode->leftChild = insNode;
+			insNode->stringSoFar = firstHalfWord;
+			insNode->stringSoFar += currChar;
 			insertNode(copyWord, currNode->leftChild, freq);
 			return true;
 		}
@@ -221,14 +226,13 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 			/*if the word is over, we're done. */
 			if(index >= word.size()) { return false; }
 			currChar = word.at(index);
+			firstHalfWord += copyWord.at(0);
 			copyWord.erase(0,1);
 			currNode = currNode->middleChild;
 		} 
 		/* if there's no middle child yet, this is it */
 		else {
 		
-	//		TrieNode * insNode = newNode(currChar);
-	//		currNode->middleChild = insNode;
 			insertNode(copyWord, currNode, freq);
 			return true;
 		}
@@ -311,7 +315,7 @@ std::vector<std::string> DictionaryTrie::predictCompletions(std::string prefix, 
 	std::priority_queue <TrieNode, std::vector<TrieNode>, Comparator> TrieQueue;
 	TrieNode* wasItFound = findNode(prefix, root, 0);
 
-	if(!wasItFound || !num_completions || prefix.compare(" ") )
+	if(!wasItFound || !num_completions || !prefix.compare("") )
 	{
 		std::cerr<<"Invalid Input. Please retry with correct input"<<"\n";
 		return words;
@@ -321,7 +325,8 @@ std::vector<std::string> DictionaryTrie::predictCompletions(std::string prefix, 
 
 	TrieNode temp;
 	std::string tempWord = "";
-	for (int i = 0; i <= num_completions; i++) {
+	for (int i = 0; i < num_completions; i++) {
+		if(TrieQueue.empty()) { break; }
 		temp = TrieQueue.top();
 		TrieQueue.pop();
 		tempWord = temp.stringSoFar;
