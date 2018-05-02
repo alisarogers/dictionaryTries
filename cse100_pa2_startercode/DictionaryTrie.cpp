@@ -321,14 +321,15 @@ std::vector<std::string> DictionaryTrie::predictCompletions(std::string prefix, 
 		return words;
 	}
 	
+	if(wasItFound->isWord) {
+		TrieQueue.push(*wasItFound);
+	}
+	
 	if(wasItFound->middleChild) {
-		if(wasItFound->isWord) {
-			TrieQueue.push(*wasItFound);
-		}
 		DFSTraversal(wasItFound->middleChild, TrieQueue);
 	} else {
-		return words;
-	}
+//		return words;
+	} 
 	TrieNode temp;
 	std::string tempWord = "";
 	for (int i = 0; i < num_completions; i++) {
