@@ -17,6 +17,7 @@
 #include "DictionaryHashtable.h"
 #include "SuffixArray.h"
 #define LETTERS 26
+#include <fstream>
 using namespace std;
 
 
@@ -24,7 +25,7 @@ int main(int argc, char** argv)
 {
 
     //Initialize words
-    vector<std::string> words;
+   vector<std::string> words;
     vector<string>::iterator wit;
     vector<string>::iterator wen;
     //initialize nonwords
@@ -390,11 +391,14 @@ int main(int argc, char** argv)
      * [AUTOCOMPLETE]
      *
      *************************************************************************************/
+	ifstream inFile;
+	inFile.open("shuffled_unique_freq_dict.txt");
+
     cout << endl << "Testing AUTOCOMPLETE..." << endl;
     cout <<         "=======================" << endl;
 
     DictionaryTrie trie;
-    trie.insert("test", 20);
+/*  trie.insert("test", 20);
     trie.insert("step up", 100);
     trie.insert("steward", 500);
     trie.insert("steer", 100);
@@ -404,9 +408,49 @@ int main(int argc, char** argv)
     trie.insert("ste", 400);
     trie.insert("step", 510);
     trie.insert("stern", 3000);
+*/
+
+	if(!inFile) {
+		cout << "unable to open file" << endl;
+	}	
+		
+	vector<std::string> dictWords;
+	std::string dictWord;
+	std::string line;
+	vector<int> dictFreqs;
+	std::string dictFreq;
+	
+	int beginning, end, freq = 0;
+
+	while(getline(inFile, line))
+	{
+		// points to the space between word and freq
+		end = line.find(" ");
+
+		//captures the word
+		dictFreq = line.substr(beginning, end);
+		
+		//getsthe frequency, i think
+		dictWord = line.substr(end);	
+		
+		dictWord.erase(0,1);
+
+ 		if(dictWord == "these")
+		{
+				
+			cout << "printed these" << endl;
+		}		
+	
+
+
+		//converts string to int
+		freq = stoi(dictFreq);
+		trie.insert(dictWord, freq);
+
+	}
 
     // check that resulting vector holds expected elements
-    vector<std::string> completions = trie.predictCompletions("pot", 5);
+    vector<std::string> completions = trie.predictCompletions("the", 10);
     cout << "vector contains ";
     for (auto item : completions) {
         cout << item << " ";
@@ -423,6 +467,7 @@ int main(int argc, char** argv)
     cout << endl;
     cout << "want to see: stern step steward ste steer stealth step up" << endl;
 
+	inFile.close();
 
     /*************************************************************************************
      *
@@ -449,27 +494,27 @@ int main(int argc, char** argv)
     std::string sc;
 
     // [Spell checker] check that returns empty string when using empty string
-    sc = trie.checkSpelling("");
+    sc = scTrie.checkSpelling("");
     if (sc != "") {
         cout << "[Spell checker] Test FAILED: Didn't return empty string for empty string." << endl;
     }
 
     // [Spell checker] check that returns empty string when passing string not in trie
-    sc = trie.checkSpelling("this string is not in the trie");
+    sc = scTrie.checkSpelling("this string is not in the trie");
     if (sc != "") {
         cout << "[Spell checker] Test FAILED: Didn't return empty string for non-existent string." << endl;
     }
 
     // [Spell checker] check that it returns 'stop' when querying 'stoo'
-    sc = trie.checkSpelling("stoo");
+    sc = scTrie.checkSpelling("stoo");
     if (sc != "stop") {
-        cout << "[Spell checker] Test FAILED: Didn't return 'stop' for query 'stoo'." << endl;
+        cout << "[Spell checker] Test FAILED: Didn't return 'stop' for query 'stoo'. Returned: " << sc << endl;
     }
 
     // [Spell checker] check that it returns 'stone' when querying 'stpmw'
-    sc = trie.checkSpelling("stzzz");
+    sc = scTrie.checkSpelling("stzzz");
     if (sc != "stone") {
-        cout << "[Spell checker] Test FAILED: Didn't return 'stone' for 'stzzz' query." << endl;
+        cout << "[Spell checker] Test FAILED: Didn't return 'stone' for 'stzzz' query. Returned: " << sc << endl;
     }
 
     /*************************************************************************************

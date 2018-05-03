@@ -15,7 +15,7 @@ class TrieNode
 public: 
 
   TrieNode();
-  bool insertNode(std::string word, TrieNode* start);  
+  bool insertNode(std::string word, std::string fullWord, TrieNode* start);  
   TrieNode* findNode(std::string word, TrieNode*start, unsigned int freq);
   void deleteAllNodes(TrieNode* root);
 

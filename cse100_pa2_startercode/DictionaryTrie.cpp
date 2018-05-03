@@ -17,7 +17,7 @@ TrieNode* newNode(char letter) {
 }
 
 /*helper method for insert*/
-bool insertNode(std::string word, TrieNode* start, unsigned int freq) {
+bool insertNode(std::string word, std::string fullWord, TrieNode* start, unsigned int freq) {
 
 	unsigned int index = 0;
 	TrieNode * insNode = start;
@@ -28,7 +28,7 @@ bool insertNode(std::string word, TrieNode* start, unsigned int freq) {
 	if(word.length() == 1) {
 		
 		insNode->isWord = true;
-		insNode->stringSoFar = word;
+		insNode->stringSoFar = fullWord;
 		insNode->frequency = freq;
 		return true;
 	}
@@ -146,7 +146,7 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 	if(!root) {
 		root = newNode(currChar);
 		root->stringSoFar = currChar;
-		insertNode(word, root, freq);	
+		insertNode(word, word, root, freq);	
 		return true;	
 	}
 	
@@ -193,7 +193,7 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 			currNode->rightChild = insNode;
 			insNode->stringSoFar = firstHalfWord;
 			insNode->stringSoFar += currChar;
-			insertNode(copyWord, currNode->rightChild, freq);
+			insertNode(copyWord, word, currNode->rightChild, freq);
 			return true;
 		}
 	}
@@ -210,7 +210,7 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 			currNode->leftChild = insNode;
 			insNode->stringSoFar = firstHalfWord;
 			insNode->stringSoFar += currChar;
-			insertNode(copyWord, currNode->leftChild, freq);
+			insertNode(copyWord, word, currNode->leftChild, freq);
 			return true;
 		}
 	}
@@ -234,7 +234,7 @@ bool DictionaryTrie::insert(std::string word, unsigned int freq)
 		/* if there's no middle child yet, this is it */
 		else {
 		
-			insertNode(copyWord, currNode, freq);
+			insertNode(copyWord, word, currNode, freq);
 			return true;
 		}
 	}
