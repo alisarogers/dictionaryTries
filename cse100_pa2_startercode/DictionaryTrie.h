@@ -8,6 +8,7 @@
 #include <queue>
 #include <vector>
 #include <string>
+#include<stack>
 
 class TrieNode
 {
@@ -24,14 +25,18 @@ public:
   TrieNode * middleChild;
   TrieNode * rightChild;
   int isWord;
+  unsigned int ham;
   unsigned int frequency; 
   std::string stringSoFar;
   friend class DictionaryTrie;
   friend class Comparator;
+  friend class ComparatorHamming;
 };
 
   bool insertNode(std::string word, TrieNode* start);  
   TrieNode* newNode(char letter);
+//creates comparator operations for priority_queue sorting by highest frequency
+//creates comparator operations for priority_queue sorting by lowest Hamming Distance
 class Comparator
 {
 public:
@@ -40,6 +45,15 @@ public:
     return a.frequency < b.frequency;
   }
 };
+class ComparatorHamming
+{
+public:
+  bool operator()(TrieNode &a, TrieNode &b)
+  {
+    return (a.ham > b.ham);
+  }
+};
+
 /**
  *  The class for a dictionary ADT, implemented as a trie
  *  You may implement this class as either a mulit-way trie
@@ -85,6 +99,9 @@ public:
   std::string
   checkSpelling(std::string query);
   void DFSTraversal(TrieNode* n, std::priority_queue<TrieNode, std::vector<TrieNode>, Comparator>& TrieQ);
+ void  DFSTraversalQuery(TrieNode* n, std::string query, std::priority_queue <TrieNode, std::vector<TrieNode>, Comparator>& TrieQ);
+  void Hamming(std::string, TrieNode& n);
+
 
   /* Destructor */
   ~DictionaryTrie();

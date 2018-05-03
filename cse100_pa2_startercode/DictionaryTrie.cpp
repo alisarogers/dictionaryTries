@@ -7,6 +7,7 @@ TrieNode::TrieNode() {}
 /*creates a new Node */
 TrieNode* newNode(char letter) {
 	TrieNode* temp = new TrieNode;
+	temp->ham = 0;
 	temp->key = letter;
 	temp->isWord = false;
 	temp->frequency = 0;
@@ -315,7 +316,7 @@ std::vector<std::string> DictionaryTrie::predictCompletions(std::string prefix, 
 	std::priority_queue <TrieNode, std::vector<TrieNode>, Comparator> TrieQueue;
 	TrieNode* wasItFound = findNode(prefix, root, 0);
 
-	if(!wasItFound || !num_completions || !prefix.compare("") )
+	if(!wasItFound || !num_completions || prefix.empty() )
 	{
 		std::cerr<<"Invalid Input. Please retry with correct input"<<"\n";
 		return words;
@@ -368,6 +369,50 @@ void DictionaryTrie::DFSTraversal(TrieNode* n, std::priority_queue <TrieNode, st
 
   return;
 }
+//traversal based on length of strings in nodes
+//for use with checkSpelling
+void DictionaryTrie::DFSTraversalQuery(TrieNode* n, std::string query, std::priority_queue <TrieNode, std::vector<TrieNode>, Comparator>& TrieQ)
+{ 
+	if(!n) { 
+		return; }
+	//if n's string's length is equal to query's, add it to queue
+	if (n->isWord && (n->stringSoFar.length() == query.length())) {
+	  //  std::cout<<"1"<<std::endl;
+		Hamming(query, *n);
+		TrieQ.push(*n);
+	}
+	//if n's string's length is greater than query's, there cannot be any strings ahead of it with length equal to query's
+	/*else if(n->stringToAppend > query.length){
+		return;
+	}*/
+	
+	//while we are on existing nodes
+	if(n->leftChild) {
+		DFSTraversalQuery(n->leftChild, query, TrieQ);	
+	}
+	
+	if(n->middleChild) {
+		DFSTraversalQuery(n->middleChild, query, TrieQ);
+	}
+
+	if(n->rightChild) {
+		DFSTraversalQuery(n->rightChild, query, TrieQ);
+	}
+
+  return;
+}
+//sets ham variable to compare nodes by hamming distance
+void DictionaryTrie::Hamming(std::string query, TrieNode& n)
+{
+	for(int i = 0; i < query.length(); i++)
+	{
+		if(query.at(i) != n.stringSoFar.at(i))
+		{
+			n.ham += 1;
+		}
+	}
+
+}
  
 /*
  * Return the most similar word of equal length to the query, based
@@ -378,9 +423,39 @@ void DictionaryTrie::DFSTraversal(TrieNode* n, std::priority_queue <TrieNode, st
  * trie, return an empty string.
  */
 std::string DictionaryTrie::checkSpelling(std::string query)
-
 {
-  return "";
+	//priority_queue that orders by frequency
+	std::priority_queue <TrieNode, std::vector<TrieNode>, Comparator> TrieQ;
+	//priority_queue that orders by Hamming Distance
+	std::priority_queue <TrieNode, std::vector<TrieNode>, ComparatorHamming> TrieHamming;
+	//wasItFound is to determine whether query is in the Trie two if-statements down
+	TrieNode * wasItFound = findNode(query, root, 0);
+
+	if(query.empty()){
+		return "";
+	}
+	if(!wasItFound){
+		//populate the TrieQ priority_queue with length(=query) words in the Trie
+		DFSTraversalQuery(root, query, TrieQ);
+
+		while(!TrieQ.empty())
+		{
+			//push TriQ contents into TrieHamming to sort length(= query) words by Hamming Distance
+			TrieHamming.push(TrieQ.top());
+			TrieQ.pop();
+		}
+		if(TrieHamming.empty())
+		{
+			return "";
+		}	
+	//returns the word at the top of TrieHamming(smallest Hamming Distance and largest frequency)
+ 	 return TrieHamming.top().stringSoFar;
+	}
+	else if (wasItFound->isWord)
+	{
+		return query;
+	}	
+	return "";
 }
 
 void DictionaryTrie::deleteTree() {
